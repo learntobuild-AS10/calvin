@@ -13,10 +13,22 @@ import hydra
 import numpy as np
 from numpy import pi
 from omegaconf import OmegaConf
-import pyhash
 import torch
 
-hasher = pyhash.fnv1_32()
+def fnv1_32(data):
+    """Pure-Python FNV-1 32-bit hash, replacing legacy pyhash."""
+    if isinstance(data, str):
+        data = data.encode("utf-8")
+
+    h = 0x811C9DC5
+    for byte in data:
+        h = (h * 0x01000193) & 0xFFFFFFFF
+        h ^= byte
+
+    return h
+
+
+hasher = fnv1_32
 logger = logging.getLogger(__name__)
 
 
